@@ -1,26 +1,27 @@
-from functools import wraps
 from collections import UserDict
+from functools import wraps
 
 
 class Field:
-    def __init__(self, value=None):
+    def __init__(self, value):
         self.value = value
-    
+
     def __str__(self):
         return str(self.value)
 
 
 class Record(Field):
-    def __init__(self, name):
+    def __init__(self, name, phone = None):
         self.name = name
+        self.phone = phone
         self.phones = []
 
     def add_phone(self, phone):
         self.phones.append(phone)
-        
+
     def change_phone(self, name, phone):
         self.phones[name] = phone
-        
+
     def delete_phone(self, phone):
         self.phones.remove(phone)
 
@@ -30,7 +31,7 @@ class Name(Field):
 
 
 class Phone(Field):
-    pass 
+    pass
 
 
 class AddressBook(UserDict):
@@ -38,7 +39,9 @@ class AddressBook(UserDict):
         name = record.name.value
         self.data[name] = record
 
+
 contacts = AddressBook()
+
 
 def input_error(func):
     @wraps(func)
@@ -89,7 +92,7 @@ def change_contacts_dict(*args):
 def phone_func(*args):
     name = args[0]
     if name in contacts.data:
-        for key, val in contacts.data.items():
+        for key in contacts.data.keys():
             record = contacts.data[key]
             if name == key:
                 return f"{name}: {', '.join(str(phone) for phone in record.phones)}"
@@ -100,9 +103,10 @@ def show_all_func(*args):
     list = []
     if len(contacts.data) == 0:
         return "list of contacts is empty..."
-    for k, v in contacts.data.items():
-        record = contacts.data[k]
-        list.append(f"{k}: {', '.join(str(phone) for phone in record.phones)}")
+    for key in contacts.data.keys():
+        record = contacts.data[key]
+        list.append(
+            f"{key}: {', '.join(str(phone) for phone in record.phones)}")
     return "\n".join([f"{item}"for item in list])
 
 
@@ -116,7 +120,7 @@ OPERATION = {
     'change': change_contacts_dict,
     'phone': phone_func,
     'show': show_all_func,
-    'help':help
+    'help': help
 }
 
 END_WORDS = ['good bye', 'close', 'exit']
