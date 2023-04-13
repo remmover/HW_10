@@ -14,7 +14,7 @@ class Record(Field):
     def __init__(self, name, phone = None):
         self.name = name
         self.phone = phone
-        self.phones = []
+        self.phones = [phone] if phone else []
 
     def add_phone(self, phone):
         self.phones.append(phone)
